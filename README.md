@@ -147,6 +147,7 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 ## Roadmap
 
+- [ ] Display switch states (on/off)
 - [ ] Windows support
 - [ ] Linux support
 - [ ] Support for other Home Assistant entities (lights, sensors, etc.)
