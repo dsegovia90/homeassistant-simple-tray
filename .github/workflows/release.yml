@@ -58,18 +58,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Setup Deno
         uses: denoland/setup-deno@v1
-        with:
-          deno-version: vx.x.x
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
+        with:
+          # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -79,48 +75,11 @@ jobs:
       - name: Install npm dependencies
         run: deno i
 
-      - name: Build Tauri app
-        run: |
-          cd "${{ github.workspace }}"
-          deno run tauri dev
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: tauri-app-macos-${{ contains(matrix.args, 'aarch64') && 'aarch64' || 'x86_64' }}
-          path: |
-            src-tauri/target/*/release/bundle/dmg/*.dmg
-            src-tauri/target/*/release/bundle/macos/*.app
-          if-no-files-found: error
-
-  create-release:
-    needs: [check-version, build-tauri]
-    if: needs.check-version.outputs.version_changed == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: Display structure of downloaded files
-        run: ls -la artifacts/
-
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ needs.check-version.outputs.version }}
-          name: Release v${{ needs.check-version.outputs.version }}
-          draft: false
-          prerelease: false
-          files: |
-            artifacts/**/*.dmg
-            artifacts/**/*.app
-          fail_on_unmatched_files: false
+      - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: __VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          releaseName: 'Home Assistant Simple Tray v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          args: ${{ matrix.args }}
