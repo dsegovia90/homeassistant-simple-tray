@@ -2,7 +2,7 @@ use crate::{api_settings::load_entities_from_store, home_assistant::HomeAssistan
 use tauri::{
     async_runtime,
     image::Image,
-    menu::{Menu, MenuEvent, MenuItem},
+    menu::{Menu, MenuBuilder, MenuEvent},
     tray::TrayIconBuilder,
     AppHandle, Manager, WebviewUrl, WebviewWindowBuilder, Wry,
 };
@@ -40,38 +40,21 @@ fn menu_event_handler(app: &AppHandle, event: MenuEvent) {
 }
 
 async fn build_menu(app: &AppHandle) -> Result<Menu<Wry>, tauri::Error> {
-    let settings = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
-    let quit_i = MenuItem::with_id(
-        app,
-        "quit",
-        "Quit SimpleTray completely",
-        true,
-        None::<&str>,
-    )?;
-
-    let tray_entities = load_entities_from_store(app.clone())
+    load_entities_from_store(app.clone())
         .await
         .map_err(|_err| tauri::Error::NoBasename)?
         .into_iter()
-        .map(|entity| {
-            MenuItem::with_id(app, entity.id, entity.friendly_name, true, None::<&str>).unwrap()
+        .fold(MenuBuilder::new(app), |builder, entity| {
+            builder.text(entity.id, entity.friendly_name)
         })
-        .collect::<Vec<_>>();
-
-    let mut menu_items: Vec<&dyn tauri::menu::IsMenuItem<Wry>> = vec![&settings];
-    menu_items.extend(
-        tray_entities
-            .iter()
-            .map(|e| e as &dyn tauri::menu::IsMenuItem<Wry>),
-    );
-    menu_items.push(&quit_i);
-
-    Ok(Menu::with_items(app, &menu_items)?)
+        .separator()
+        .text("settings", "Settings")
+        .text("quit", "Quit Completely")
+        .build()
 }
 
 pub async fn build_tray_menu(app: &AppHandle) -> Result<(), tauri::Error> {
     let menu = build_menu(app).await?;
-    println!("Built menu!");
 
     if let Some(tray) = app.tray_by_id("main") {
         tray.set_menu(Some(menu))?;
@@ -90,7 +73,6 @@ pub async fn build_tray_menu(app: &AppHandle) -> Result<(), tauri::Error> {
 
 pub async fn rebuild_tray_menu(app: &AppHandle) -> Result<(), tauri::Error> {
     let menu = build_menu(app).await?;
-    println!("Built menu!");
 
     if let Some(tray) = app.tray_by_id("main") {
         tray.set_menu(Some(menu))?;
