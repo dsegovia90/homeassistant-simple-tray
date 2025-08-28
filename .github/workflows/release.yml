@@ -20,20 +20,19 @@ jobs:
       - name: Get current version
         id: get_version
         run: |
-          VERSION=$(grep '^version' ./src-tauri/Cargo.toml | sed -E 's/version[[:space:]]*=[[:space:]]*"([^"]+)"/\1/')
+          VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Current version: $VERSION"
 
       - name: Check if version changed
         id: check_version
         run: |
           # Get the previous version
-          git checkout HEAD~1 -- ./src-tauri/Cargo.toml 2>/dev/null || echo "First commit"
-          PREV_VERSION=$(grep '^version' ./src-tauri/Cargo.toml | sed -E 's/version[[:space:]]*=[[:space:]]*"([^"]+)"/\1/' 2>/dev/null || echo "0.0.0")
+          git checkout HEAD~1 package.json 2>/dev/null || echo "First commit"
+          PREV_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version" 2>/dev/null || echo "0.0.0")
 
           # Restore current version
-          git checkout HEAD -- ./src-tauri/Cargo.toml
-          CURR_VERSION=$(grep '^version' ./src-tauri/Cargo.toml | sed -E 's/version[[:space:]]*=[[:space:]]*"([^"]+)"/\1/')
+          git checkout HEAD package.json
+          CURR_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
 
           if [ "$PREV_VERSION" != "$CURR_VERSION" ]; then
             echo "Version changed from $PREV_VERSION to $CURR_VERSION"
