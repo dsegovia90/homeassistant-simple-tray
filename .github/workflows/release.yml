@@ -43,6 +43,8 @@ jobs:
           fi
 
   build-tauri:
+    permissions:
+      contents: write
     needs: check-version
     if: needs.check-version.outputs.version_changed == 'true'
     strategy:
