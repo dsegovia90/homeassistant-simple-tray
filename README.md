@@ -6,6 +6,8 @@ A lightweight system tray application for macOS (Windows support coming soon) th
 ![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
 ![Built with](https://img.shields.io/badge/built%20with-Tauri%20%2B%20Vue%203-brightgreen.svg)
 
+![Screenshot](readme-assets/base-screenshot.png)
+
 ## Features
 
 - 🎯 **Quick Access**: Toggle Home Assistant switches directly from your system tray
