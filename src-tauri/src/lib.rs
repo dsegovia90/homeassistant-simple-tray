@@ -9,6 +9,8 @@ use tauri::async_runtime;
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
+            #[cfg(target_os = "macos")]
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
             let app_handle = app.handle().clone();
             // Spawn the tray menu creation in a separate task to avoid blocking
             async_runtime::spawn(async move {
