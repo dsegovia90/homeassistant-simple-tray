@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "homeassistant-simple-tray",
+  "productName": "Home Assistant Simple Tray",
   "version": "0.1.0",
   "identifier": "io.dsego.homeassistant-simple-tray",
   "build": {
@@ -10,8 +10,18 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "windows": [
+      {
+        "visible": false,
+        "decorations": false
+      }
+    ],
     "security": {
       "csp": null
+    },
+    "trayIcon": {
+      "iconPath": "icons/tray-icon.png",
+      "iconAsTemplate": false
     }
   },
   "bundle": {
@@ -22,7 +32,9 @@
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/icon.icns",
-      "icons/icon.ico"
-    ]
+      "icons/icon.ico",
+      "icons/tray-icon.png"
+    ],
+    "resources": ["icons/*"]
   }
 }

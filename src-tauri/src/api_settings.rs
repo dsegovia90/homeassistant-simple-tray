@@ -1,11 +1,10 @@
+use crate::{
+    home_assistant::{self, ApiStatusResponse, BooleanEntity, HomeAssistant},
+    tray::rebuild_tray_menu,
+};
 use std::collections::HashMap;
 use tauri::Manager;
 use tauri_plugin_store::StoreExt;
-
-use crate::{
-    build_tray_menu,
-    home_assistant::{self, ApiStatusResponse, BooleanEntity, HomeAssistant},
-};
 
 #[tauri::command]
 pub async fn load_settings(app: tauri::AppHandle) -> Result<HomeAssistant, String> {
@@ -74,7 +73,7 @@ pub async fn save_entity_to_store(
 
     store.set("entities", serde_json::to_value(&entities).unwrap());
 
-    build_tray_menu(app.app_handle())
+    rebuild_tray_menu(app.app_handle())
         .await
         .map_err(|e| e.to_string())?;
 

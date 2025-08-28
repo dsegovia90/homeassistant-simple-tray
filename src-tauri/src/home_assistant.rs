@@ -76,6 +76,20 @@ impl TryFrom<StateEntry> for BooleanEntity {
     }
 }
 
+#[allow(dead_code)]
+#[derive(Debug, Deserialize)]
+pub struct ToggleSwitchResponse {
+    pub entity_id: String,
+    pub state: String,
+    pub attributes: ToggleSwitchAttributes,
+}
+
+#[allow(dead_code)]
+#[derive(Debug, Deserialize)]
+pub struct ToggleSwitchAttributes {
+    pub friendly_name: String,
+}
+
 impl HomeAssistant {
     pub async fn load_settings(app: &tauri::AppHandle) -> Result<Self, anyhow::Error> {
         let store = app.store("settings.json")?;
@@ -142,10 +156,7 @@ impl HomeAssistant {
                 message: "Unable to parse response".to_string(),
             })?;
 
-        Ok(ApiStatusResponse {
-            status: ApiStatus::Online,
-            message: response.message,
-        })
+        Ok(ApiStatusResponse::online(response.message))
     }
 
     pub async fn get_switch_entities(&self) -> Result<Vec<BooleanEntity>, anyhow::Error> {
@@ -184,7 +195,10 @@ impl HomeAssistant {
             .collect())
     }
 
-    pub async fn toggle_switch_entity(&self, id: String) -> Result<(), anyhow::Error> {
+    pub async fn toggle_switch_entity(
+        &self,
+        id: String,
+    ) -> Result<Vec<ToggleSwitchResponse>, anyhow::Error> {
         #[derive(Serialize)]
         struct ToggleSwitchPayload {
             entity_id: String,
@@ -199,9 +213,13 @@ impl HomeAssistant {
             .json(&json)
             .build()?;
 
-        let response = self.reqwest_client.execute(request).await?.text().await?;
+        let response = self
+            .reqwest_client
+            .execute(request)
+            .await?
+            .json::<Vec<ToggleSwitchResponse>>()
+            .await?;
 
-        dbg!(response);
-        Ok(())
+        Ok(response)
     }
 }
