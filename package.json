@@ -1,7 +1,6 @@
 {
   "name": "homeassistant-simple-tray",
   "private": true,
-  "version": "0.1.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
