@@ -27,11 +27,11 @@ jobs:
         id: check_version
         run: |
           # Get the previous version
-          git checkout HEAD~1 package.json 2>/dev/null || echo "First commit"
+          git checkout HEAD~1 src-tauri/tauri.conf.json 2>/dev/null || echo "First commit"
           PREV_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version" 2>/dev/null || echo "0.0.0")
 
           # Restore current version
-          git checkout HEAD package.json
+          git checkout HEAD src-tauri/tauri.conf.json
           CURR_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
 
           if [ "$PREV_VERSION" != "$CURR_VERSION" ]; then
