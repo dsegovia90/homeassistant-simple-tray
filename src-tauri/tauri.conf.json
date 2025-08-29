@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Home Assistant Simple Tray",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "identifier": "io.dsego.homeassistant-simple-tray",
   "build": {
     "beforeDevCommand": "deno task dev",
@@ -35,6 +35,15 @@
       "icons/icon.ico",
       "icons/tray-icon.png"
     ],
-    "resources": ["icons/*"]
+    "resources": ["icons/*"],
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDVGODQxQTFGQjMwRDI4MEYKUldRUEtBMnpIeHFFWDhBNE1Td2drVmluK3l0eGRZS0w1eTl6M2pvcjhxK0pIcGZmVExBdU9pRnAK",
+      "endpoints": [
+        "https://github.com/dsegovia90/homeassistant-simple-tray/releases/latest/download/latest.json"
+      ]
+    }
   }
 }

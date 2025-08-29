@@ -5,6 +5,7 @@
     "npm:@tauri-apps/api@^2.8.0": "2.8.0",
     "npm:@tauri-apps/cli@2": "2.8.3",
     "npm:@tauri-apps/plugin-opener@^2.5.0": "2.5.0",
+    "npm:@tauri-apps/plugin-updater@2.9": "2.9.0",
     "npm:@vitejs/plugin-vue@^5.2.1": "5.2.4_vite@6.3.5__picomatch@4.0.2_vue@3.5.16__typescript@5.6.3_typescript@5.6.3",
     "npm:tailwindcss@^4.1.12": "4.1.12",
     "npm:typescript@~5.6.2": "5.6.3",
@@ -509,6 +510,12 @@
         "@tauri-apps/api"
       ]
     },
+    "@tauri-apps/plugin-updater@2.9.0": {
+      "integrity": "sha512-j++sgY8XpeDvzImTrzWA08OqqGqgkNyxczLD7FjNJJx/uXxMZFz5nDcfkyoI/rCjYuj2101Tci/r/HFmOmoxCg==",
+      "dependencies": [
+        "@tauri-apps/api"
+      ]
+    },
     "@tybys/wasm-util@0.10.0": {
       "integrity": "sha512-VyyPYFlOMNylG45GoAe0xDoLwWuowvf92F9kySqzYh8vmYm7D2u4iUJKa1tOUpS70Ku13ASrOkS4ScXFsTaCNQ==",
       "dependencies": [
@@ -964,6 +971,7 @@
         "npm:@tauri-apps/api@^2.8.0",
         "npm:@tauri-apps/cli@2",
         "npm:@tauri-apps/plugin-opener@^2.5.0",
+        "npm:@tauri-apps/plugin-updater@2.9",
         "npm:@vitejs/plugin-vue@^5.2.1",
         "npm:tailwindcss@^4.1.12",
         "npm:typescript@~5.6.2",

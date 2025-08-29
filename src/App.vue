@@ -84,7 +84,3 @@ const activeTab = ref<"settings" | "config">("settings");
     </nav>
   </div>
 </template>
-
-<style scoped>
-/* Additional styles if needed */
-</style>

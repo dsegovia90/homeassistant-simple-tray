@@ -1,6 +1,7 @@
 mod api_settings;
 mod home_assistant;
 mod tray;
+mod updater;
 
 use crate::tray::build_tray_menu;
 use tauri::async_runtime;
@@ -8,7 +9,13 @@ use tauri::async_runtime;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
+            let handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                updater::update(handle).await.unwrap();
+            });
+
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
             let app_handle = app.handle().clone();

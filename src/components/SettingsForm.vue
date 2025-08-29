@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { invoke } from "@tauri-apps/api/core";
+import { getVersion } from "@tauri-apps/api/app";
 
 interface ApiStatusResponse {
   status: "Online" | "Offline";
@@ -16,6 +17,7 @@ const token = ref("");
 const appUrl = ref("");
 const apiStatus = ref<ApiStatusResponse>();
 const isChecking = ref(false);
+const version = ref("");
 
 const statusColor = computed(() => {
   if (!apiStatus.value) return "";
@@ -68,6 +70,8 @@ onMounted(async () => {
   } catch (error) {
     console.error("Failed to load settings:", error);
   }
+
+  version.value = await getVersion();
 });
 </script>
 
@@ -172,6 +176,7 @@ onMounted(async () => {
         </div>
       </form>
     </div>
+    <p class="text-center text-sm text-gray-600 mt-4">version: {{ version }}</p>
   </main>
 </template>
 
