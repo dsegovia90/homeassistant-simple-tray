@@ -176,7 +176,9 @@ onMounted(async () => {
         </div>
       </form>
     </div>
-    <p class="text-center text-sm text-gray-600 mt-4">version: {{ version }}</p>
+    <p class="text-center text-sm text-gray-600 mt-4 italic">
+      version: {{ version }}
+    </p>
   </main>
 </template>
 
