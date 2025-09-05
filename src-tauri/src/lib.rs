@@ -35,6 +35,7 @@ pub fn run() {
             api_settings::get_switch_entities,
             api_settings::save_entity_to_store,
             api_settings::load_entities_from_store,
+            api_settings::clear_entities_from_store,
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")

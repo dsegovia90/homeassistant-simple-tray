@@ -8,9 +8,17 @@ interface BooleanEntity {
   state: string;
 }
 const entities = ref<BooleanEntity[]>([]);
-const checkedEntities = ref<Map<string, BooleanEntity>>(new Map());
+const checkedEntities = ref<Set<string>>(new Set());
 
-const getBooleanEntities = async () => {};
+const clearEntities = async () => {
+  try {
+    await invoke("clear_entities_from_store");
+    checkedEntities.value = new Set();
+    console.log("All entities cleared from store");
+  } catch (error) {
+    console.error("Failed to clear entities:", error);
+  }
+};
 
 const addToList = async (entity: BooleanEntity, e: Event) => {
   const target = e.target as HTMLInputElement;
@@ -31,7 +39,7 @@ onMounted(async () => {
 
   entities.value = booleanEntities;
   loadedEntities.forEach((entity) => {
-    checkedEntities.value.set(entity.id, entity);
+    checkedEntities.value.add(entity.id);
   });
 });
 </script>
@@ -39,8 +47,6 @@ onMounted(async () => {
 <template>
   <div class="p-6 max-w-md mx-auto">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Configuration</h2>
-
-    <button @click="getBooleanEntities">Get Boolean Entities</button>
 
     <div v-if="entities.length > 0" class="mt-6">
       <h3 class="text-lg font-semibold text-gray-700 mb-4">
@@ -58,12 +64,21 @@ onMounted(async () => {
           </div>
           <input
             type="checkbox"
+            :value="entity.id"
+            v-model="checkedEntities"
             @change="(e) => addToList(entity, e)"
-            :checked="checkedEntities.has(entity.id)"
             class="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
           />
         </li>
       </ul>
     </div>
+
+    <hr />
+    <button
+      @click="clearEntities"
+      class="mt-4 ml-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+    >
+      Clear All Entities
+    </button>
   </div>
 </template>

@@ -3,7 +3,6 @@ use crate::{
     tray::rebuild_tray_menu,
 };
 use std::collections::HashMap;
-use tauri::Manager;
 use tauri_plugin_store::StoreExt;
 
 #[tauri::command]
@@ -73,9 +72,7 @@ pub async fn save_entity_to_store(
 
     store.set("entities", serde_json::to_value(&entities).unwrap());
 
-    rebuild_tray_menu(app.app_handle())
-        .await
-        .map_err(|e| e.to_string())?;
+    rebuild_tray_menu(&app).await.map_err(|e| e.to_string())?;
 
     Ok(())
 }
@@ -94,4 +91,14 @@ pub async fn load_entities_from_store(app: tauri::AppHandle) -> Result<Vec<Boole
     };
 
     Ok(entities.into_values().collect())
+}
+
+#[tauri::command]
+pub async fn clear_entities_from_store(app: tauri::AppHandle) -> Result<(), String> {
+    let store = app.store("entities.json").map_err(|e| e.to_string())?;
+
+    store.delete("entities");
+    store.save().map_err(|e| e.to_string())?;
+    rebuild_tray_menu(&app).await.map_err(|e| e.to_string())?;
+    Ok(())
 }
